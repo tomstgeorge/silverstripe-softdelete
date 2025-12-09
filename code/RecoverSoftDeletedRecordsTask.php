@@ -1,6 +1,5 @@
 <?php
 
-use SilverStripe\ORM\DB;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\PolyExecution\PolyOutput;
@@ -28,11 +27,6 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
      */
     protected static  string $description = 'Helps you to track and potentially recover or clean up any soft deleted record';
 
-    /**
-     * Setup command options
-     *
-     * @return array
-     */
     /**
      * Setup command options
      *

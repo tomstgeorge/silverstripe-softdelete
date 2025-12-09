@@ -129,7 +129,7 @@ class GridFieldSoftDeleteAction implements GridField_ColumnProvider, GridField_A
     public function handleAction(
         GridField $gridField,
         $actionName,
-        arguments,
+        $arguments,
         $data
     ) {
         if ($actionName == 'softdeleterecord') {
