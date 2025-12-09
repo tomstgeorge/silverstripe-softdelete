@@ -60,14 +60,14 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
         if (!$selectedClass) {
             $output->writeln("Please choose any of the following class and pass it as 'class' in the url.");
             foreach ($classes as $cl) {
-                $output->writeForAnsi("  - {$cl}", true);
-                $output->writeForHtml("<a href=\"/dev/tasks/RecoverSoftDeletedRecordsTask?class={$cl}\">{$cl}</a>", false);
+                $output->writeForAnsi(sprintf("  - %s", $cl), true);
+                $output->writeForHtml(sprintf("<a href=\"/dev/tasks/RecoverSoftDeletedRecordsTask?class=%s\">%s</a>", $cl, $cl), false);
             }
             return Command::SUCCESS;
         }
 
         if (!in_array($selectedClass, $classes)) {
-            $output->writeln("<error>{$selectedClass} is not valid</error>");
+            $output->writeln(sprintf("<error>%s is not valid</error>", $selectedClass));
             return Command::FAILURE;
         }
 
@@ -99,14 +99,14 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
         foreach ($records as $record) {
             if ($recover == 'all' || ($recover && in_array($record->ID, $toRecover))) {
                 $record->undoDelete();
-                $output->writeln("<info>{$record->getTitle()} (#{$record->ID}) has been recovered</info>");
+                $output->writeln(sprintf("<info>%s (#%s) has been recovered</info>", $record->getTitle(), $record->ID));
             } elseif ($cleanup) {
-                $output->writeln("Deleting {$record->getTitle()}");
+                $output->writeln(sprintf("Deleting %s", $record->getTitle()));
                 $record->delete();
             } else {
                 $DeletedBy = $record->DeletedBy();
                 $Deleter = $DeletedBy ? $DeletedBy->getTitle() : "Unknown";
-                $output->writeln("{$record->getTitle()} (#{$record->ID}) has been deleted at {$record->Deleted} by {$Deleter}");
+                $output->writeln(sprintf("%s (#%s) has been deleted at %s by %s", $record->getTitle(), $record->ID, $record->Deleted, $Deleter));
             }
         }
 
