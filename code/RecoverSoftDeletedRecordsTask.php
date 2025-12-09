@@ -25,7 +25,7 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
     /**
      * @inheritDoc
      */
-    protected static  string $description = 'Helps you to track and potentially recover or clean up any soft deleted record';
+    protected static string $description = 'Helps you to track and potentially recover or clean up any soft deleted record';
 
     /**
      * Setup command options
@@ -58,11 +58,11 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
         $cleanup = $input->getOption('cleanup');
 
         if (!$selectedClass) {
-            $output->writeln('Please choose any of the following classes:');
+            $output->writeln("Please choose any of the following class and pass it as 'class' in the url.");
             foreach ($classes as $cl) {
-                $output->writeln("  - {$cl}");
+                $output->writeForAnsi("  - {$cl}", true);
+                $output->writeForHtml("<a href=\"/dev/tasks/RecoverSoftDeletedRecordsTask?class={$cl}\">{$cl}</a>", false);
             }
-            $output->writeln("\nUsage: sake tasks:RecoverSoftDeletedRecordsTask --class=ClassName [--recover=all|id1,id2] [--cleanup]");
             return Command::SUCCESS;
         }
 
@@ -81,8 +81,12 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
         }
 
         $toRecover = [];
-        if ($recover && $recover !== 'all') {
-            $toRecover = array_map('trim', explode(',', $recover));
+        if ($recover) {
+            if ($recover == 'all' || $cleanup) {
+                // keep all
+            } else {
+                $toRecover = array_map('trim', explode(',', $recover));
+            }
         }
 
         SoftDeletable::$disable = true;
@@ -90,11 +94,10 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
 
         if (!$records->count()) {
             $output->writeln('No soft deleted records');
-            return Command::SUCCESS;
         }
 
         foreach ($records as $record) {
-            if ($recover === 'all' || ($recover && in_array($record->ID, $toRecover))) {
+            if ($recover == 'all' || ($recover && in_array($record->ID, $toRecover))) {
                 $record->undoDelete();
                 $output->writeln("<info>{$record->getTitle()} (#{$record->ID}) has been recovered</info>");
             } elseif ($cleanup) {
@@ -103,19 +106,19 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
             } else {
                 $DeletedBy = $record->DeletedBy();
                 $Deleter = $DeletedBy ? $DeletedBy->getTitle() : "Unknown";
-                $output->writeln("{$record->getTitle()} (#{$record->ID}) deleted at {$record->Deleted} by {$Deleter}");
+                $output->writeln("{$record->getTitle()} (#{$record->ID}) has been deleted at {$record->Deleted} by {$Deleter}");
             }
         }
 
         if ($recover) {
-            $output->writeln('<info>Recovery complete</info>');
+            $output->writeln('Recovery complete');
         } elseif ($cleanup) {
-            $output->writeln('<info>Cleanup complete</info>');
+            $output->writeln('Cleanup complete');
         } else {
-            $output->writeln("\nTo recover: --recover=all or --recover=id1,id2");
-            $output->writeln("To cleanup: --cleanup");
+            $output->writeln("Recover all of of list of records by passing ?recover=all or ?recover=id,id2,id3 in the url or clean them by passing ?cleanup=1");
         }
 
         return Command::SUCCESS;
     }
+
 }
