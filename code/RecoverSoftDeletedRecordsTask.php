@@ -14,19 +14,19 @@ use Symfony\Component\Console\Input\InputOption;
 class RecoverSoftDeletedRecordsTask extends BuildTask
 {
     /**
-     * @var string
+     * @inheritDoc
      */
-    private static $segment = 'RecoverSoftDeletedRecordsTask';
+    protected static string $commandName  = 'RecoverSoftDeletedRecordsTask';
 
     /**
-     * @var string
+     * @inheritDoc
      */
-    protected $title = 'Recover or Clean Soft Deleted Records';
+    protected string $title = 'Recover or Clean Soft Deleted Records';
 
     /**
-     * @var string
+     * @inheritDoc
      */
-    protected $description = 'Helps you to track and potentially recover or clean up any soft deleted record';
+    protected static  string $description = 'Helps you to track and potentially recover or clean up any soft deleted record';
 
     /**
      * Setup command options
