@@ -78,7 +78,7 @@ Keep in mind that `DataObject::get_by_id();` can get cached and it can lead to t
 
 # Compatibility
 
-Tested and 6.x
+Tested with 6.x
 
 For SilverStripe 5 or Silverstripe 4, please use version 3.x of this module.
 
