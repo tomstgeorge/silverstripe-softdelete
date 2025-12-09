@@ -1,11 +1,11 @@
 <?php
 
-use SilverStripe\ORM\SS_List;
+use SilverStripe\Model\List\SS_List;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\HasManyList;
 use SilverStripe\ORM\ManyManyList;
-use SilverStripe\ORM\ValidationException;
+use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridField_FormAction;
@@ -128,9 +128,9 @@ class GridFieldSoftDeleteAction implements GridField_ColumnProvider, GridField_A
      */
     public function handleAction(
         GridField $gridField,
-        $actionName,
-        $arguments,
-        $data
+        string $actionName,
+        mixed $arguments,
+        array $data
     ) {
         if ($actionName == 'softdeleterecord') {
             /** @var DataList $list */

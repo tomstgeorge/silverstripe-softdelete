@@ -5,7 +5,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Security\Member;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\Security\Security;
 use LeKoala\CmsActions\CustomAction;
 use SilverStripe\Control\Controller;
@@ -21,7 +21,7 @@ use SilverStripe\Core\Config\Configurable;
  * @property string $Deleted
  * @property int $DeletedByID
  */
-class SoftDeletable extends DataExtension
+class SoftDeletable extends Extension
 {
     use Configurable;
 
@@ -81,14 +81,6 @@ class SoftDeletable extends DataExtension
      */
     public function updateSearchableFields(array &$fields)
     {
-        /*
-^ array:4 [▼
-  "Title" => array:2 [▼
-    "title" => "Name"
-    "filter" => "PartialMatchFilter"
-  ]
-  ...
-        */
         $fields['IncludeDeleted'] = [
             'filter' => SoftDeleteSearchFilter::class,
             'field' => CheckboxField::class,
