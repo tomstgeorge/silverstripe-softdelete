@@ -3,6 +3,10 @@
 use SilverStripe\ORM\DB;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\PolyExecution\PolyOutput;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * @author Koala
@@ -25,87 +29,99 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
     protected $description = 'Helps you to track and potentially recover or clean up any soft deleted record';
 
     /**
-     * @param HTTPRequest $request
-     * @return void
+     * Setup command options
+     *
+     * @return array
      */
-    public function run($request)
+    /**
+     * Setup command options
+     *
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return [
+            new InputOption('class', null, InputOption::VALUE_REQUIRED, 'The class to recover/clean'),
+            new InputOption('recover', null, InputOption::VALUE_OPTIONAL, 'Recover records (all or comma-separated IDs)', false),
+            new InputOption('cleanup', null, InputOption::VALUE_NONE, 'Permanently delete soft-deleted records'),
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function execute(InputInterface $input, PolyOutput $output): int
     {
         $classes = SoftDeletable::listSoftDeletableClasses();
 
         if (empty($classes)) {
-            DB::alteration_message("No softDeletable classes", "error");
-            return;
+            $output->writeln('<error>No softDeletable classes</error>');
+            return Command::FAILURE;
         }
 
-        /** @var ?string $selectedClass */
-        $selectedClass = $request->getVar('class');
-        /** @var ?string $recover */
-        $recover = $request->getVar('recover');
-        /** @var ?string $cleanup */
-        $cleanup = $request->getVar('cleanup');
+        $selectedClass = $input->getOption('class');
+        $recover = $input->getOption('recover');
+        $cleanup = $input->getOption('cleanup');
 
         if (!$selectedClass) {
-            DB::alteration_message("Please choose any of the following class and pass it as 'class' in the url.");
+            $output->writeln('Please choose any of the following classes:');
             foreach ($classes as $cl) {
-                DB::alteration_message("<a href=\"/dev/tasks/RecoverSoftDeletedRecordsTask?class=$cl\">$cl</a>");
+                $output->writeln("  - {$cl}");
             }
-            return;
+            $output->writeln("\nUsage: sake tasks:RecoverSoftDeletedRecordsTask --class=ClassName [--recover=all|id1,id2] [--cleanup]");
+            return Command::SUCCESS;
         }
 
         if (!in_array($selectedClass, $classes)) {
-            DB::alteration_message("$selectedClass is not valid", "error");
-            return;
+            $output->writeln("<error>{$selectedClass} is not valid</error>");
+            return Command::FAILURE;
         }
 
         if ($recover && $cleanup) {
-            DB::alteration_message("Cannot recover and cleanup at the same time", "error");
-            return;
+            $output->writeln('<error>Cannot recover and cleanup at the same time</error>');
+            return Command::FAILURE;
         }
 
         if ($cleanup) {
             SoftDeletable::$prevent_delete = false;
         }
 
-        $toRecover = array();
-        if ($recover) {
-            //@phpstan-ignore-next-line
-            if ($recover == 'all' || $cleanup) {
-                // keep all
-            } else {
-                $toRecover = array_map('trim', explode(',', $recover));
-            }
+        $toRecover = [];
+        if ($recover && $recover !== 'all') {
+            $toRecover = array_map('trim', explode(',', $recover));
         }
 
         SoftDeletable::$disable = true;
         $records = $selectedClass::get()->where('Deleted IS NOT NULL');
+
         if (!$records->count()) {
-            DB::alteration_message("No soft deleted records");
+            $output->writeln('No soft deleted records');
+            return Command::SUCCESS;
         }
+
         foreach ($records as $record) {
-            if ($recover == 'all' || ($recover && in_array($record->ID, $toRecover))) {
+            if ($recover === 'all' || ($recover && in_array($record->ID, $toRecover))) {
                 $record->undoDelete();
-                DB::alteration_message(
-                    $record->getTitle() . " (#" . $record->ID . ") has been recovered",
-                    'repaired'
-                );
+                $output->writeln("<info>{$record->getTitle()} (#{$record->ID}) has been recovered</info>");
             } elseif ($cleanup) {
-                DB::alteration_message("Deleting " . $record->getTitle());
+                $output->writeln("Deleting {$record->getTitle()}");
                 $record->delete();
             } else {
                 $DeletedBy = $record->DeletedBy();
-                $Deleter = "Unknown";
-                if ($DeletedBy) {
-                    $Deleter = $DeletedBy->getTitle();
-                }
-                DB::alteration_message($record->getTitle() . " (#" . $record->ID . ") has been deleted at " . $record->Deleted . ' by ' . $Deleter);
+                $Deleter = $DeletedBy ? $DeletedBy->getTitle() : "Unknown";
+                $output->writeln("{$record->getTitle()} (#{$record->ID}) deleted at {$record->Deleted} by {$Deleter}");
             }
         }
+
         if ($recover) {
-            DB::alteration_message("Recovery complete");
+            $output->writeln('<info>Recovery complete</info>');
         } elseif ($cleanup) {
-            DB::alteration_message("Cleanup complete");
+            $output->writeln('<info>Cleanup complete</info>');
         } else {
-            DB::alteration_message("Recover all of of list of records by passing ?recover=all or ?recover=id,id2,id3 in the url or clean them by passing ?cleanup=1");
+            $output->writeln("\nTo recover: --recover=all or --recover=id1,id2");
+            $output->writeln("To cleanup: --cleanup");
         }
+
+        return Command::SUCCESS;
     }
 }
