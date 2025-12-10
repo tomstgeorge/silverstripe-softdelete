@@ -59,20 +59,24 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
 
         if (!$selectedClass) {
             $output->writeln("Please choose any of the following class and pass it as 'class' in the url.");
+
             foreach ($classes as $cl) {
                 $output->writeForAnsi(sprintf("  - %s", $cl), true);
                 $output->writeForHtml(sprintf("<a href=\"/dev/tasks/RecoverSoftDeletedRecordsTask?class=%s\">%s</a>", $cl, $cl), false);
             }
+
             return Command::SUCCESS;
         }
 
         if (!in_array($selectedClass, $classes)) {
             $output->writeln(sprintf("<error>%s is not valid</error>", $selectedClass));
+
             return Command::FAILURE;
         }
 
         if ($recover && $cleanup) {
             $output->writeln('<error>Cannot recover and cleanup at the same time</error>');
+
             return Command::FAILURE;
         }
 
