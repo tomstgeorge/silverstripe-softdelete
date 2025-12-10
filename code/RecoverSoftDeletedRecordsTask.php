@@ -85,6 +85,7 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
         }
 
         $toRecover = [];
+
         if ($recover) {
             if ($recover == 'all' || $cleanup) {
                 // keep all
