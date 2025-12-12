@@ -29,6 +29,10 @@
             "silverstripe/vendor-plugin": true
         }
     },
+      "scripts": {
+        "lint": "phpcs code/",
+        "lint-clean": "phpcbf code/"
+    },
     "extra": {
         "installer-name": "softdelete"
     },

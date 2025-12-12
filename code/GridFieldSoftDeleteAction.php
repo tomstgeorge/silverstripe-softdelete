@@ -17,7 +17,6 @@ use SilverStripe\Forms\GridField\GridField_ColumnProvider;
  */
 class GridFieldSoftDeleteAction implements GridField_ColumnProvider, GridField_ActionProvider
 {
-
     /**
      * Add a column 'Delete'
      *

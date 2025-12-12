@@ -125,5 +125,4 @@ class RecoverSoftDeletedRecordsTask extends BuildTask
 
         return Command::SUCCESS;
     }
-
 }

@@ -15,7 +15,6 @@ use SilverStripe\Forms\GridField\GridFieldDeleteAction;
  */
 class SoftDeleteModelAdmin extends Extension
 {
-
     /**
      * @return string
      */

@@ -1,5 +1,18 @@
 # SilverStripe Soft Delete Module
 
+[![Build Status](https://github.com/lekoala/silverstripe-softdelete/actions/workflows/ci.yml/badge.svg)](https://github.com/lekoala/silverstripe-softdelete/actions)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lekoala/silverstripe-softdelete/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/lekoala/silverstripe-softdelete/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/lekoala/silverstripe-softdelete/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/lekoala/silverstripe-softdelete/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/lekoala/silverstripe-softdelete/badges/build.png?b=master)](https://scrutinizer-ci.com/g/lekoala/silverstripe-softdelete/build-status/master)
+[![codecov.io](https://codecov.io/github/lekoala/silverstripe-softdelete/coverage.svg?branch=master)](https://codecov.io/github/lekoala/silverstripe-softdelete?branch=master)
+
+[![Latest Stable Version](https://poser.pugx.org/lekoala/silverstripe-softdelete/version)](https://packagist.org/packages/lekoala/silverstripe-softdelete)
+[![Latest Unstable Version](https://poser.pugx.org/lekoala/silverstripe-softdelete/v/unstable)](//packagist.org/packages/lekoala/silverstripe-softdelete)
+[![Total Downloads](https://poser.pugx.org/lekoala/silverstripe-softdelete/downloads)](https://packagist.org/packages/lekoala/silverstripe-softdelete)
+[![License](https://poser.pugx.org/lekoala/silverstripe-softdelete/license)](https://packagist.org/packages/lekoala/silverstripe-softdelete)
+[![Monthly Downloads](https://poser.pugx.org/lekoala/silverstripe-softdelete/d/monthly)](https://packagist.org/packages/lekoala/silverstripe-softdelete)
+[![Daily Downloads](https://poser.pugx.org/lekoala/silverstripe-softdelete/d/daily)](https://packagist.org/packages/lekoala/silverstripe-softdelete)
+
 Add a soft delete behaviour to your dataobjects. Objects are simply marked as deleted and kept in the database.
 
 Soft delete will follow the same permissions patterns as delete.
