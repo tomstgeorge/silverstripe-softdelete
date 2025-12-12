@@ -19,15 +19,15 @@ These are ideals if you have child records that need to be soft deleted with the
 
 ```yml
 SilverStripe\Admin\ModelAdmin:
-    softdelete_from_list: true
-    softdelete_from_list_exclude: []
-    extensions:
-        - SoftDeleteModelAdmin
+  softdelete_from_list: true
+  softdelete_from_list_exclude: []
+  extensions:
+    - SoftDeleteModelAdmin
 SilverStripe\Admin\SecurityAdmin:
-    softdelete_from_list: true
-    softdelete_from_list_exclude: []
-    extensions:
-        - SoftDeleteSecurityAdmin
+  softdelete_from_list: true
+  softdelete_from_list_exclude: []
+  extensions:
+    - SoftDeleteSecurityAdmin
 ```
 
 You can configure:
@@ -71,14 +71,16 @@ An alternative option, is to disable that feature:
 
 ```yml
 SoftDeletable:
-    check_filters_on_id: false
+  check_filters_on_id: false
 ```
 
 Keep in mind that `DataObject::get_by_id();` can get cached and it can lead to tricky scenarios.
 
 # Compatibility
 
-Tested with 4.4+
+Tested with 6.x
+
+For SilverStripe 5 or Silverstripe 4, please use version 3.x of this module.
 
 # Maintainer
 
