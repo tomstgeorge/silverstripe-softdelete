@@ -15,7 +15,6 @@ use SilverStripe\Forms\GridField\GridFieldDeleteAction;
  */
 class SoftDeleteModelAdmin extends Extension
 {
-
     /**
      * @return string
      */
@@ -52,8 +51,8 @@ class SoftDeleteModelAdmin extends Extension
                     $config->removeComponentsByType(GridFieldDeleteAction::class);
                 }
                 if ($owner::config()->softdelete_from_list) {
-                    $exclude = $this->owner->config()->softdelete_from_list_exclude;
-                    if ($exclude && !in_array($modelClass, $exclude)) {
+                    $exclude = (array)$this->owner->config()->softdelete_from_list_exclude;
+                    if (!in_array($modelClass, $exclude)) {
                         $config->addComponent(new GridFieldSoftDeleteAction());
                     }
                 }
