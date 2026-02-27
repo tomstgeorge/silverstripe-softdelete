@@ -71,6 +71,25 @@ class GridFieldSoftDeleteAction implements GridField_ColumnProvider, GridField_A
     }
 
     /**
+     * Determine if the given record can be soft-deleted.
+     *
+     * This checks for an optional canSoftDelete() method first, and falls back
+     * to canDelete() for backwards compatibility.
+     *
+     * @param DataObject $record
+     * @return bool
+     */
+    protected function canSoftDeleteRecord(DataObject $record)
+    {
+        if ($record->hasMethod('canSoftDelete')) {
+            //@phpstan-ignore-next-line
+            return (bool)$record->canSoftDelete();
+        }
+
+        return (bool)$record->canDelete();
+    }
+
+    /**
      * Which GridField actions are this component handling
      *
      * @param GridField $gridField
@@ -89,7 +108,7 @@ class GridFieldSoftDeleteAction implements GridField_ColumnProvider, GridField_A
      */
     public function getColumnContent($gridField, $record, $columnName)
     {
-        if (!$record->canDelete()) {
+        if (!$this->canSoftDeleteRecord($record)) {
             return null;
         }
 
@@ -140,7 +159,7 @@ class GridFieldSoftDeleteAction implements GridField_ColumnProvider, GridField_A
                 return;
             }
 
-            if (!$item->canDelete()) {
+            if (!$this->canSoftDeleteRecord($item)) {
                 throw new ValidationException(
                     _t(
                         'GridFieldAction_Delete.DeletePermissionsFailure',

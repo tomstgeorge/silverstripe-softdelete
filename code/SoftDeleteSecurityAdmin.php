@@ -40,8 +40,8 @@ class SoftDeleteSecurityAdmin extends Extension
 
                 $config->removeComponentsByType(GridFieldDeleteAction::class);
                 if ($owner::config()->softdelete_from_list) {
-                    $exclude = $this->owner->config()->softdelete_from_list_exclude;
-                    if ($exclude && !in_array($this->owner->modelClass, $exclude)) {
+                    $exclude = (array)$this->owner->config()->softdelete_from_list_exclude;
+                    if (!in_array($this->owner->modelClass, $exclude)) {
                         $config->addComponent(new GridFieldSoftDeleteAction());
                     }
                 }
@@ -64,7 +64,10 @@ class SoftDeleteSecurityAdmin extends Extension
 
                 $config->removeComponentsByType(GridFieldDeleteAction::class);
                 if ($owner::config()->softdelete_from_list) {
-                    $config->addComponent(new GridFieldSoftDeleteAction());
+                    $exclude = (array)$this->owner->config()->softdelete_from_list_exclude;
+                    if (!in_array($this->owner->modelClass, $exclude)) {
+                        $config->addComponent(new GridFieldSoftDeleteAction());
+                    }
                 }
             }
         }
