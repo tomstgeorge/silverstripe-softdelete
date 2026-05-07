@@ -236,8 +236,6 @@ class SoftDeletable extends Extension
      */
     public function onBeforeWrite()
     {
-        parent::onBeforeWrite();
-
         // Check if this we could a duplicated email with a deleted member
         if ($this->owner instanceof Member && $this->owner->Email) {
             $list = Member::get()->filter('Email', $this->owner->Email)->exclude('ID', $this->owner->ID);
@@ -259,7 +257,6 @@ class SoftDeletable extends Extension
         if (self::$prevent_delete) {
             throw new Exception("Tried to delete a DataObject, but data deletion is currently active");
         }
-        parent::onBeforeDelete();
     }
 
     /**
